@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.cluster import KMeans
+import sys
+import numpy as np
 
 st.header("MyNextPint: App based on 1M+ beer reviews from Untappd")
 
@@ -26,6 +29,15 @@ def display_cards(series):
 st.write("")
 st.write("**Your Next Pint:** Give us your favorite beer, we'll recommend you 5 more just like it")
 
+@st.cache_resource
+def cluster(embed, n):
+            kmeans = KMeans(n_clusters=30)
+            cluster_labels = kmeans.fit_predict(embed)
+            embed['style_cluster'] = cluster_labels
+            return embed
+
+embed = cluster(embed, 30)
+
 dis = True
 with st.sidebar:
     options = df.sort_values(by="review_count", ascending=False)["beer_name"].values.tolist()
@@ -40,19 +52,27 @@ if generate and input:
         display_cards(choice)
 
     with cols[1]:
-        def similarity(embed):
-            cosine_sim = cosine_similarity(embed)
-            return cosine_sim
 
-        cosine_sim = similarity(embed)
+        def recommend_beers(beer_name, embed=embed, df=df):
+            selected_idx = df[df["beer_name"] == beer_name].index[0]
+            selected_cluster = embed.loc[selected_idx, 'style_cluster']
+            
+            # Filter for the same cluster
+            cluster_df = df[embed['style_cluster'] == selected_cluster]
+            cluster_embed = embed[embed['style_cluster'] == selected_cluster].drop(columns=['style_cluster'])
 
-        def recommend_beers(beer_name, cosine_sim=cosine_sim, df=df):
-            idx = df[df['beer_name'] == beer_name].index[0]
-            sim_scores = list(enumerate(cosine_sim[idx]))
-            sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-            sim_scores = sim_scores[1:6]
-            beer_indices = [i[0] for i in sim_scores]
-            return df.iloc[beer_indices].reset_index()
+            # Compute cosine similarity within the cluster
+            cosine_sim = cosine_similarity(cluster_embed)
+            selected_cluster_idx = cluster_df.index.get_loc(selected_idx)  # Index within the cluster
+
+            # Get similarity scores for the selected beer
+            sim_scores = list(enumerate(cosine_sim[selected_cluster_idx]))
+            sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:6]  # Top 5 similar beers
+
+            # Map to original indices
+            beer_indices = cluster_df.iloc[[i[0] for i in sim_scores]].index
+            return df.loc[beer_indices].reset_index(drop=True)
+
         
         st.header("Similar beers:")
         output = recommend_beers(input)
