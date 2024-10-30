@@ -39,7 +39,6 @@ if generate and input:
         choice = df[df["beer_name"]==input]
         display_cards(choice)
 
-
     with cols[1]:
         @st.cache_resource
         def similarity(embed):
@@ -64,3 +63,5 @@ if generate and input:
                 row = output[output["beer_name"]==output.loc[index, "beer_name"]]
                 display_cards(row)
 
+elif generate and not input:
+    st.warning("Enter input")
