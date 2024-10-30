@@ -2,8 +2,7 @@ import streamlit as st
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
-import sys
-import numpy as np
+
 
 st.header("MyNextPint: App based on 1M+ beer reviews from Untappd")
 
@@ -24,7 +23,6 @@ def display_cards(series):
         c2.write("Palate: "+str(round(series['review_palate'].values[0], 3)))
         c2.write("Taste: "+str(round(series['review_taste'].values[0], 3)))
 
-#def display_card_output(series):
 #Frontend
 st.write("")
 st.write("**Your Next Pint:** Give us your favorite beer, we'll recommend you 5 more just like it")
@@ -38,7 +36,6 @@ def cluster(embed, n):
 
 embed = cluster(embed, 30)
 
-dis = True
 with st.sidebar:
     options = df.sort_values(by="review_count", ascending=False)["beer_name"].values.tolist()
     input = st.selectbox("Choose from 22644 beers",options, index=None, placeholder="Select beer...")
