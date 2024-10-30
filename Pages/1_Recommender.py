@@ -40,7 +40,6 @@ if generate and input:
         display_cards(choice)
 
     with cols[1]:
-        @st.cache_resource
         def similarity(embed):
             cosine_sim = cosine_similarity(embed)
             return cosine_sim
