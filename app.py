@@ -48,8 +48,14 @@ prod_stats_page = st.Page(
 
 st.logo("images/MNP-icon.png", size = "large")
 
-pages=[reco_page, review_stats_page, prod_stats_page]
+recommend=[reco_page]
+charts=[review_stats_page, prod_stats_page]
 
-pg = st.navigation(pages)
+pg = st.navigation(
+    {
+        "Recommender" : recommend,
+        "Stats for Geeks" : charts
+    }
+)
 
 pg.run()
