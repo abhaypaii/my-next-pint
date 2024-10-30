@@ -46,11 +46,10 @@ fig2.update_yaxes(showticklabels=False)
 
 #ROW 2
 with st.container(key="middlecharts", height=300, border=True):
-    c1,c2, c3 = st.columns(3, vertical_alignment="top")
+    c1,c2, col3 = st.columns(3, vertical_alignment="top")
     c1.plotly_chart(fig1)
-    c2.plotly_chart(fig2)
 
-    with c3.container(key="ratings", border=False, height = 225):
+    with c2.container(key="ratings", border=False, height = 225):
         st.write("**Average Ratings**")
         c1, c2, c3, c4 = st.columns([1,4,4,4])
         c2.metric(label="Overall", value=round(data["review_overall"].mean(), 2))
@@ -58,6 +57,8 @@ with st.container(key="middlecharts", height=300, border=True):
         c3.metric(label="Appearance", value=round(data["review_appearance"].mean(), 2))
         c3.metric(label="Palate", value=round(data["review_palate"].mean(), 2))
         c4.metric(label="Taste", value=round(data["review_taste"].mean(), 2))
+    
+    col3.plotly_chart(fig2)
 
 
 data_avg = data[numcols].groupby("beer_abv").median().reset_index()
