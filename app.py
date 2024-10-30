@@ -1,7 +1,7 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="Abhay's MyNextPint App",
+    page_title= "My Next Pint",
     layout="wide",
     page_icon='🍻',
     initial_sidebar_state="expanded",
