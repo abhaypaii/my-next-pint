@@ -18,6 +18,7 @@ with st.sidebar:
     startrating, endrating = st.select_slider("Rating", options=[1,2,3,4,5], value=(1,5))
     data = data[(data["review_overall"] <= endrating) & (data["review_overall"] >= startrating)]
 
+#ROW 1
 with st.container(key="popular"):
     c1,c2 = st.columns(2)
     with c1:
@@ -27,10 +28,10 @@ with st.container(key="popular"):
         value = data[["brewery_name", "review_count"]].groupby("brewery_name").sum().sort_values(by="review_count", ascending=False).reset_index().values[0]
         st.metric(label="Most popular brewery", value=value[0], delta=str(value[-1])+ " reviews")
 
+#Fig1: Reviews per beer
 fig1 = px.bar(data.sort_values(by="review_count", ascending=False)[:7], x="review_count", y="beer_name", text= "beer_name", color="review_count", color_continuous_scale="ylorbr", text_auto=True, orientation="h", height=300)
 fig1.update_layout(barmode='stack', yaxis={'categoryorder':'total ascending'}, coloraxis_showscale=False, title="Reviews per beer")
 fig1.update_traces(texttemplate = '%{y} (%{x})', textposition = "inside")
-#fig1.update_traces(texttemplate = data["review_count"], textposition = "inside")
 fig1.update_yaxes(showticklabels=False)
 
 numcols = ['review_overall', 'review_aroma', 'review_appearance', 'review_palate', 'review_taste', 'beer_abv']
@@ -40,7 +41,10 @@ review_corr["correlation"] = round(review_corr["correlation"],2)
 
 fig2 = px.bar(review_corr, x="correlation", y="factor", color="correlation", color_continuous_scale="ylorbr", text_auto=True, orientation="h", height=300)
 fig2.update_layout(barmode='stack', yaxis={'categoryorder':'total ascending'}, coloraxis_showscale=False, title="Factors affecting overall rating")
+fig2.update_traces(texttemplate = '%{y} (%{x})', textposition = "inside")
+fig2.update_yaxes(showticklabels=False)
 
+#ROW 2
 with st.container(key="middlecharts", height=300, border=True):
     c1,c2, c3 = st.columns(3, vertical_alignment="top")
     c1.plotly_chart(fig1)
@@ -80,7 +84,9 @@ for i, d in enumerate(fig3.data):
                     legendgroup = d.name,
                     showlegend=False)
     
-c1, c2=st.columns([1.2,2])
-c1.write("**Data**")
-c1.dataframe(data, height=300, hide_index=True)
-c2.plotly_chart(fig3)
+#ROW 3
+with st.container(key="bottomcharts"):  
+    c1, c2=st.columns([1.2,2])
+    c1.write("**Data**")
+    c1.dataframe(data, height=300, hide_index=True)
+    c2.plotly_chart(fig3)
