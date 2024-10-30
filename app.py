@@ -10,6 +10,8 @@ st.set_page_config(
     }
 )
 
+st.html('<head><meta name="google-site-verification" content="vopOWvrbazdKv3WU5Uu7RchuHy8WnOsV8wL4rdj92Pk" /> </head> ')
+
 st.markdown("""
         <style>
                .block-container {
