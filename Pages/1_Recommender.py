@@ -7,7 +7,6 @@ st.header("MyNextPint: App based on 1M+ beer reviews from Untappd")
 #Recommendation Engine Backend
 df = pd.read_csv("embedded_beer_list.csv")
 embed = df.drop(columns=["beer_name", "beer_style", "brewery_name", "review_count"])
-metadata = df[["beer_name", "beer_style", "brewery_name", "review_count"]]
 
 def display_cards(series):
     with st.container(key = series['beer_name'], border=True):
@@ -27,15 +26,13 @@ def display_cards(series):
 st.write("")
 st.write("**Your Next Pint:** Give us your favorite beer, we'll recommend you 5 more just like it")
 
+dis = True
 with st.sidebar:
     options = df.sort_values(by="review_count", ascending=False)["beer_name"].values.tolist()
     input = st.selectbox("Choose from 22644 beers",options, index=None, placeholder="Select beer...")
-    dis = True
-    if input:
-        dis=False
-    generate = st.button("Generate", disabled=dis)
+    generate = st.button("Generate")
 
-if generate:
+if generate and input:
     cols = st.columns([1,1.2])
     with cols[0]:
         st.header("Chosen beer:")
