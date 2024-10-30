@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 
 st.set_page_config(
     page_title= "My Next Pint",
@@ -10,7 +11,11 @@ st.set_page_config(
     }
 )
 
-st.html('<head><meta name="google-site-verification" content="vopOWvrbazdKv3WU5Uu7RchuHy8WnOsV8wL4rdj92Pk" /> </head> ')
+#st.html('<head><meta name="google-site-verification" content="vopOWvrbazdKv3WU5Uu7RchuHy8WnOsV8wL4rdj92Pk" /> </head> ')
+
+HtmlFile = open("google1f9a33aad42da938.html", 'r', encoding='utf-8')
+source_code = HtmlFile.read() 
+components.html(source_code, height=0)
 
 st.markdown("""
         <style>
